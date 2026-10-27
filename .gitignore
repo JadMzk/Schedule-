@@ -1,8 +1,6 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
+# Dependencies
+node_modules/
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -10,32 +8,56 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
+# Next.js
+.next/
+out/
+.turbo/
+next-env.d.ts
 
-# next.js
-/.next/
-/out/
+# Production / packaging
+build/
+dist/
+dist-desktop/
+*.dmg
+*.zip
+*.app
 
-# production
-/build
+# Tests & coverage
+coverage/
 
-# misc
-.DS_Store
-*.pem
+# Env and secrets — never commit real values
+.env
+.env.*
+!.env.example
 
-# debug
+# Local app data (JSON store + ICS URL)
+/data/*.json
+/data/*.json.tmp
+!/data/.gitkeep
+
+# Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.pem
 
-# vercel
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Launcher / icon intermediates (if regenerated)
+/launcher/icon.iconset/
+/launcher/icon-1024.png
+/launcher/*.jpg

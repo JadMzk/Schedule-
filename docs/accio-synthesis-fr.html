@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart Scheduler — Synthèse concurrentielle et marché (français)</title>
+  <style>
+    :root {
+      --ink: #1a2332;
+      --muted: #5a6a7e;
+      --paper: #f3f1eb;
+      --paper-2: #e8e4da;
+      --surface: #fffcf7;
+      --teal: #0f6e6e;
+      --teal-soft: #d5ecec;
+      --amber: #c47a1a;
+      --amber-soft: #f5e6d0;
+      --coral: #c45c4a;
+      --coral-soft: #f5ddd8;
+      --sage: #4a7c59;
+      --sage-soft: #dce8e0;
+      --line: #d4cfc4;
+      --fact: #0f6e6e;
+      --estimate: #c47a1a;
+      --inference: #4a7c59;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.55 "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 80px; }
+    header.hero {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 28px;
+      margin-bottom: 28px;
+    }
+    .kicker {
+      font-family: system-ui, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--teal);
+      font-weight: 600;
+    }
+    h1 { font-size: 2.1rem; line-height: 1.2; font-weight: 600; margin: 8px 0 12px; }
+    h2 { font-size: 1.45rem; margin: 40px 0 12px; font-weight: 600; }
+    h3 { font-size: 1.1rem; margin: 22px 0 8px; font-weight: 600; }
+    p, li { color: var(--ink); }
+    .lede { font-size: 1.15rem; max-width: 46rem; }
+    .meta { font-family: system-ui, sans-serif; font-size: 13px; color: var(--muted); }
+    .langs { float: right; font-family: system-ui, sans-serif; font-size: 13px; }
+    .langs a { color: var(--teal); text-decoration: none; margin-left: 10px; }
+    .langs a.active { font-weight: 700; color: var(--ink); }
+    nav.toc {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px 16px;
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      margin: 20px 0 8px;
+    }
+    nav.toc a { color: var(--teal); text-decoration: none; }
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--teal);
+      padding: 16px 18px;
+      margin: 16px 0 24px;
+    }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 20px;
+      font-family: system-ui, sans-serif; font-size: 13px;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: 999px; padding: 4px 10px;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .pedagogie {
+      background: var(--teal-soft);
+      padding: 12px 14px;
+      margin: 12px 0 18px;
+      font-size: 0.95rem;
+    }
+    .pedagogie b { font-family: system-ui, sans-serif; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); display: block; margin-bottom: 4px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 800px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+    }
+    .card h3 { margin-top: 0; }
+    .stat { font-size: 1.55rem; font-weight: 600; color: var(--teal); }
+    .stat span { display: block; font-size: 12px; font-family: system-ui, sans-serif; color: var(--muted); font-weight: 500; margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--surface); }
+    th, td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { font-family: system-ui, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); font-weight: 600; }
+    .chart-block { background: var(--surface); border: 1px solid var(--line); padding: 16px 16px 8px; margin: 16px 0 24px; }
+    .chart-block h3 { margin: 0 0 4px; }
+    .caption { font-family: system-ui, sans-serif; font-size: 12px; color: var(--muted); margin: 4px 0 10px; }
+    svg.chart { width: 100%; height: auto; display: block; }
+    .jobs ol { padding-left: 1.2rem; }
+    .jobs li { margin-bottom: 6px; }
+    footer { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; font-size: 13px; color: var(--muted); }
+    .src a { color: var(--teal); }
+    .small { font-size: 13px; color: var(--muted); }
+    .tag { font-family: system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .tag.fact { color: var(--fact); }
+    .tag.est { color: var(--estimate); }
+    .tag.inf { color: var(--inference); }
+    ul.compact { margin: 8px 0; padding-left: 1.15rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="langs">
+        <a href="accio-synthesis-en.html" lang="en">English</a>
+        <a class="active" href="accio-synthesis-fr.html" lang="fr">Français</a>
+      </div>
+      <div class="kicker">Synthèse de recherche Accio · 20 octobre 2026</div>
+      <h1>L’angle n’est pas « la planification par IA ». C’est la faisabilité de la charge académique.</h1>
+      <p class="lede">Briefing pédagogique de deux notes Accio : preuves concurrentielles sur 15 familles de produits, et un modèle TAM/SAM/SOM pour Schedule+ / Smart Scheduler fusionné avec Ike. Lisez la couleur de chaque affirmation avant de traiter un chiffre comme une prévision.</p>
+      <p class="meta">Produit : Schedule+ / Smart Scheduler + Ike · Public : fondateurs et investisseurs · Sources consultées le 20 oct. 2026</p>
+      <nav class="toc" aria-label="Sommaire">
+        <a href="#read">1. Comment lire</a>
+        <a href="#verdict">2. Verdict</a>
+        <a href="#job">3. Le travail à accomplir</a>
+        <a href="#map">4. Carte concurrentielle</a>
+        <a href="#prices">5. Gravité des prix</a>
+        <a href="#shipped">6. Déjà construit</a>
+        <a href="#market">7. Dimensionnement</a>
+        <a href="#uk-fr">8. Royaume-Uni vs France</a>
+        <a href="#som">9. SOM 24 mois</a>
+        <a href="#pricing">10. Offre</a>
+        <a href="#gtm">11. Go-to-market</a>
+        <a href="#risks">12. Risques et tests</a>
+      </nav>
+    </header>
+
+    <section id="read">
+      <h2>1. Comment lire ce document</h2>
+      <div class="pedagogie">
+        <b>Note pédagogique</b>
+        Une recherche concurrentielle mélange trois types d’énoncés. Les traiter comme équivalents est la façon la plus courante de rendre un slide marché trompeur.
+      </div>
+      <div class="legend">
+        <span class="chip"><span class="dot" style="background:var(--fact)"></span> <b>FAIT</b> — observé sur une page vendeur ou officielle</span>
+        <span class="chip"><span class="dot" style="background:var(--estimate)"></span> <b>ESTIMATION</b> — hypothèse de scénario, pas une preuve</span>
+        <span class="chip"><span class="dot" style="background:var(--inference)"></span> <b>INFÉRENCE</b> — conclusion d’analyste à partir des faits</span>
+      </div>
+      <p>« Inconnu » signifie que la page consultée ne publie pas le chiffre. Accio n’a pas inspecté de code privé : « fondé sur des contraintes » signifie ici que <em>le vendeur le revendique publiquement</em> (capacité / échéance / durée), pas que nous ayons reverse-engineered le moteur.</p>
+    </section>
+
+    <section id="verdict">
+      <h2>2. Verdict en un paragraphe</h2>
+      <div class="callout">
+        <span class="tag inf">Inférence</span>
+        <p style="margin:6px 0 0">Il existe un angle, mais ce n’est pas « la planification par IA ». Le problème défendable : un étudiant a un emploi du temps réel, plusieurs deadlines de cours, un temps libre fini, une énergie variable, et a besoin d’une réponse fiable à « quoi maintenant, et quand puis-je vraiment le faire ? » Les planificateurs académiques comprennent cours et examens, mais ne montrent pas de solveur de capacité. Motion et Reclaim font du vrai ordonnancement sous contraintes, pour des professionnels. Lancer avec <b>ICS en lecture seule + deadlines par module + packing déterministe + explication LLM bornée + confirmation avant planification</b>. Ne pas mener avec « LLM ». Mener avec « ne jamais rater le travail qui tient autour de ton vrai emploi du temps ».</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="stat">Gravité £0<span>Les substituts étudiants sont gratuits ou ~15 £/an</span></div>
+        </div>
+        <div class="card">
+          <div class="stat">2 solveurs<span>Seuls Motion et Reclaim revendiquent un vrai ordonnancement sous contraintes</span></div>
+        </div>
+        <div class="card">
+          <div class="stat">Job ouvert<span>Aucun incumbent ne possède EDT + effort + créneau faisable suivant</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="job">
+      <h2>3. Le travail à accomplir (JTBD)</h2>
+      <div class="pedagogie">
+        <b>Note pédagogique</b>
+        Le vrai concurrent à 8 h le lundi n’est pas une autre appli. C’est Outlook + LMS + une liste papier + le bachotage de dernière minute. Un produit ne gagne que s’il demande moins d’effort que ce flux fragmenté.
+      </div>
+      <p><b>Client de conception :</b> étudiant STEM à temps plein (Imperial / Royaume-Uni), 4 à 8 heures de cours certains jours, un devoir pour mardi 23 h 59, plus sport, job ou trajet.</p>
+      <div class="jobs grid-2">
+        <div class="card">
+          <h3>Six jobs</h3>
+          <ol>
+            <li><b>Capturer</b> — une phrase : « réviser les stats deux heures demain après-midi. »</li>
+            <li><b>Voir la réalité</b> — quoi est dû, combien de travail reste, le temps libre suffit-il ?</li>
+            <li><b>Choisir maintenant</b> — selon l’énergie : victoire rapide ou gros caillou ?</li>
+            <li><b>Placer le travail</b> — un bloc sans conflit autour des cours et de la deadline.</li>
+            <li><b>Protéger le reste</b> — le coursework ne doit pas effacer carrière, sport, perso.</li>
+            <li><b>Faire confiance</b> — suggestions utiles, pas de tâches inventées à chaque cours.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>Positionnement qui survit à la copie</h3>
+          <p>« Le planificateur de charge académique qui <em>prouve que le travail tient</em>. » Éviter « l’IA qui planifie ta vie », qui invite ChatGPT et Motion.</p>
+          <p class="small">Durable : modèle de données académique + boucle solveur ; confiance/contrôle comme système ; distribution campus. Copiable en six mois : saisie en langage naturel, remise étudiante, re-classement LLM sur le scheduler d’un autre.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="map">
+      <h2>4. Carte concurrentielle — qui résout vraiment des contraintes ?</h2>
+      <div class="pedagogie">
+        <b>Comment lire le nuage</b>
+        Axe horizontal = ontologie académique (modules, semestres, semaines A/B, examens). Axe vertical = ordonnancement sous contraintes (capacité, durée, deadline, replanification). Les scores sont des <span class="tag inf">inférences</span> à partir des revendications publiques, pas des mesures de labo. Le quadrant haut-droit vide est la thèse produit.
+      </div>
+      <div class="chart-block">
+        <h3>Ontologie académique vs ordonnancement sous contraintes</h3>
+        <p class="caption">Source : preuves Accio, 20 oct. 2026 · axes = scores analyste 0–10 d’après les revendications publiques · Smart Scheduler = livré aujourd’hui, pas la cible fusion</p>
+        <div id="scatter" role="img" aria-label="Nuage de points des produits selon ontologie académique et ordonnancement sous contraintes"></div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Groupe</th><th>Exemples</th><th>Possède aujourd’hui</th><th>Écart vs Smart Scheduler</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Planificateurs académiques</td><td>MyStudyLife, iStudiez</td><td>Cours, semestres, examens, GPA</td><td>Pas de solveur public de capacité / slack</td></tr>
+          <tr><td>Vrais schedulers</td><td>Motion, Reclaim</td><td>Deadline + durée + capacité + replan</td><td>Ontologie pro ; 200 $+ / an</td></tr>
+          <tr><td>Blocage assisté</td><td>Morgen, Structured, Tiimo</td><td>Timelines, brouillon IA, contrôle</td><td>Générique ou ADHD-adjacent, pas lié aux cours</td></tr>
+          <tr><td>Gestionnaires de tâches</td><td>Todoist, TickTick</td><td>Capture, filtres</td><td>Placement manuel ; pas de modèle étudiant</td></tr>
+          <tr><td>Défauts à 0 €</td><td>Google Agenda, Notion, ChatGPT</td><td>Événements, notes, conseils</td><td>Le chat de disponibilité ≠ faisabilité de charge</td></tr>
+          <tr><td>Systèmes de référence</td><td>Canvas, Moodle, Blackboard, Outlook</td><td>Deadlines / EDT officiels</td><td>Pas de plan de capacité perso — les ingérer</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="prices">
+      <h2>5. Gravité des prix — les étudiants ne vivent pas dans le monde de Motion</h2>
+      <div class="pedagogie">
+        <b>Note pédagogique</b>
+        La volonté de payer est ancrée par les outils gratuits. Le premium listé de MyStudyLife est 14,99 £/an (la page porte encore un code promo 2024 : traiter comme <span class="tag est">tarif actuel non pleinement vérifié</span>). Motion Pro AI est à 19 $/siège/mois en toggle annuel = 228 $/an. Un produit étudiant au prix de Motion perd sur la distribution avant de perdre sur les fonctionnalités.
+      </div>
+      <div class="chart-block">
+        <h3>Prix annuels publiés (devise native, confirmés si la page vendeur les énonce)</h3>
+        <p class="caption">Les prix inconnus (sièges Reclaim, sync iStudiez, Forest Plus, caisse Tiimo, contrats LMS) sont omis, pas inventés. Le tarif mensuel Motion n’a pas été rendu. Structured = listing App Store US.</p>
+        <div id="prices-chart" role="img" aria-label="Diagramme en barres des prix annuels publiés"></div>
+      </div>
+    </section>
+
+    <section id="shipped">
+      <h2>6. Déjà construit vs encore conçu</h2>
+      <p>Thèse de fusion : <b>le moteur déterministe possède dates, temps libre, faisabilité et packing ; le LLM possède parsing, jugement mou, re-classement borné et le « pourquoi ».</b> Si le modèle échoue, un ranker à règles répond encore. Recommander, jamais détourner le calendrier.</p>
+      <div class="chart-block">
+        <h3>Couverture des capacités par origine</h3>
+        <p class="caption">Nombre d’items explicites dans la carte de statut Accio · ce n’est pas un score de complétude du marché</p>
+        <div id="shipped-chart" role="img" aria-label="Diagramme des capacités livrées versus conçues"></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Livré dans Schedule+</h3>
+          <ul class="compact">
+            <li>ICS Outlook privé, parse, extraction de modules, sélecteur</li>
+            <li>Saisie en langage naturel + confirmation avant enregistrement</li>
+            <li>Recherche de créneaux 8 h–22 h, packing glouton, accepter/refuser</li>
+            <li>Blocs perso en place, couleurs TaskCategory</li>
+            <li>Electron macOS, JSON / secrets locaux</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Livré dans Ike / conçu en fusion</h3>
+          <ul class="compact">
+            <li>Ike : importance × urgence, effort, check-in énergie, quadrants</li>
+            <li>Fusion : effort restant vs temps libre, at-risk, CP-SAT plus tard</li>
+            <li>Re-ranker LLM borné, température 0, schéma + repli</li>
+            <li>Modèles de suggestion fermés, budgets, undo 24 h</li>
+            <li>Web d’abord puis iOS ; pas de génération massive silencieuse</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="market">
+      <h2>7. Dimensionnement — TAM, SAM, SOM comme poupées russes</h2>
+      <div class="pedagogie">
+        <b>Vocabulaire</b>
+        <b>TAM</b> = tous ceux dans le monde qui pourraient théoriquement avoir besoin de la catégorie.<br />
+        <b>SAM</b> = la part que vous pouvez réellement atteindre en ~24 mois (langue, export de calendrier, appareils).<br />
+        <b>SOM</b> = ce que vous pouvez vendre compte tenu de votre propre capacité (activation, conversion, pilotes campus). Le SOM n’est pas « 2 % du TAM ».
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="stat">2,86 M<span>Inscriptions HE UK 2024/25 · HESA [FAIT]</span></div>
+        </div>
+        <div class="card">
+          <div class="stat">23 248<span>Étudiants Imperial 2024–25 [FAIT] · vivier design-partner</span></div>
+        </div>
+        <div class="card">
+          <div class="stat">~269 M<span>Étudiants universitaires mondiaux UNESCO [FAIT]</span></div>
+        </div>
+      </div>
+      <p class="small">Russell Group ≈ ¾ de million d’étudiants, environ 25 % des étudiants UK [FAIT]. Irlande : 260 070 inscriptions 2023/24 d’un résultat HEA — vérifier le jeu téléchargeable avant un modèle investisseur. HESA compte des inscriptions, pas des personnes uniques.</p>
+
+      <div class="chart-block">
+        <h3>TAM de catégorie (étudiant d’abord, ARPU consommateur seulement)</h3>
+        <p class="caption">Formule : 269 M × adéquation du besoin × adéquation au planning numérique × ARPU · tous les taux sont [ESTIMATION] · ce n’est pas un revenu obtenable · hors licences universités</p>
+        <div id="tam-chart" role="img" aria-label="Diagramme groupé du TAM par scénario et ARPU"></div>
+      </div>
+
+      <div class="chart-block">
+        <h3>SAM — marchés anglais / calendriers exportables joignables en 24 mois</h3>
+        <p class="caption">Proxy : aucun jeu officiel unique des universités enseignées en anglais avec calendrier exportable n’a été trouvé · parts [ESTIMATION]</p>
+        <div id="sam-chart" role="img" aria-label="Diagramme SAM effectifs et revenus"></div>
+      </div>
+
+      <div class="chart-block">
+        <h3>Têtes de pont (faits) vs scénarios d’utilisateurs payants (estimations)</h3>
+        <p class="caption">15 / 25 / 35 % = scénario de douleur et de volonté, pas une pénétration mesurée. À remplacer par des données d’entonnoir. Revenu à 36–72 £/an.</p>
+        <div id="beach-chart" role="img" aria-label="Diagramme des étudiants adressables par tête de pont"></div>
+      </div>
+    </section>
+
+    <section id="uk-fr">
+      <h2>8. Royaume-Uni vs France — même taille, go-to-market différent</h2>
+      <div class="pedagogie">
+        <b>Note pédagogique</b>
+        Accio a dimensionné la tête de pont britannique ; la France n’était pas dans les notes d’origine. Les effectifs ci-dessous sont officiels et comparables dans l’esprit (inscriptions nationales en enseignement supérieur), mais les <em>systèmes</em> ne sont pas interchangeables : langue, export d’emploi du temps et filières institutionnelles changent ce que signifie « importer ton calendrier ». L’effectif seul ne décide pas l’ordre de lancement.
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="stat">2,86 M<span>Inscriptions HE UK 2024/25 · HESA [FAIT]</span></div>
+        </div>
+        <div class="card">
+          <div class="stat">3,01 M<span>Inscriptions ES France 2024–25 · MESR-SIES [FAIT]</span></div>
+        </div>
+        <div class="card">
+          <div class="stat">+5 %<span>La France est légèrement plus grande que le Royaume-Uni sur cet indicateur [FAIT]</span></div>
+        </div>
+      </div>
+      <p class="small">France : <b>3 012 800</b> inscriptions dans l’enseignement supérieur en 2024–25 (hors doubles inscriptions simultanées CPGE), +1,4 % vs 2023–24 · MESR-SIES. Dont <b>1 631 500</b> à l’université (périmètre strict), <b>26,5 %</b> dans le privé, et <b>21,8 %</b> en apprentissage. Royaume-Uni : <b>2 863 180</b> inscriptions HE (HESA) — inscriptions, pas personnes uniques, dans les deux pays.</p>
+
+      <div class="chart-block">
+        <h3>Effectifs nationaux côte à côte</h3>
+        <p class="caption">UK HESA 2024/25 · France MESR-SIES 2024–25 · universités françaises (strict) présentées comme une tranche du total français</p>
+        <div id="uk-fr-headcount" role="img" aria-label="Diagramme comparant les inscriptions ES Royaume-Uni et France"></div>
+      </div>
+
+      <div class="chart-block">
+        <h3>Mêmes scénarios de conversion payante appliqués à chaque pays</h3>
+        <p class="caption">15 / 25 / 35 % de l’effectif national × ARPU 36–72 £ · méthode [ESTIMATION] reprise du beachhead Accio UK pour rendre les deux marchés comparables · pas une WTP mesurée</p>
+        <div id="uk-fr-paid" role="img" aria-label="Diagramme groupé des scénarios d’utilisateurs payants UK vs France"></div>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Dimension</th><th>Royaume-Uni</th><th>France</th><th>Implication produit</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Effectif ES</td>
+            <td>2,86 M d’inscriptions [FAIT]</td>
+            <td>3,01 M d’inscriptions [FAIT]</td>
+            <td><span class="tag inf">Inférence</span> La taille n’est pas le différenciateur — la France est au moins aussi grande.</td>
+          </tr>
+          <tr>
+            <td>Forme institutionnelle</td>
+            <td>Surtout l’université ; Russell Group ≈ 0,75 M [FAIT]</td>
+            <td>Universités (1,63 M) + grandes écoles, CPGE (86,9 k, +5,5 %), STS, écoles de commerce [FAIT]</td>
+            <td><span class="tag inf">Inférence</span> Des têtes de pont françaises peuvent être des EDT très denses (prépa / ingénieurs) autant que des modules LMD.</td>
+          </tr>
+          <tr>
+            <td>Client de conception aujourd’hui</td>
+            <td>Imperial / STEM UK + ICS Outlook [FAIT — produit]</td>
+            <td>Pas encore instrumenté dans Accio</td>
+            <td>Livrer là où le chemin ICS est prouvé ; ne pas supposer que les ENT français se comportent comme Outlook.</td>
+          </tr>
+          <tr>
+            <td>Langue &amp; capture NL</td>
+            <td>UI et parseur anglais livrés</td>
+            <td>Produit French-first nécessaire pour une adoption de masse</td>
+            <td><span class="tag inf">Inférence</span> La France est un projet de localisation + parseur, pas un copier-coller du SAM britannique.</td>
+          </tr>
+          <tr>
+            <td>Chemin EDT / calendrier</td>
+            <td>ICS Outlook privé validé à Imperial ; ICS portable pour le Russell Group = pari Accio</td>
+            <td>Stacks ENT / ADE / Hyperplanning fréquents ; l’exportabilité ICS varie selon le campus — <b>non mesuré dans Accio</b></td>
+            <td>Traiter l’ingest calendrier français comme une porte de validation avant d’inclure la France dans le SAM 24 mois.</td>
+          </tr>
+          <tr>
+            <td>Prix / substituts gratuits</td>
+            <td>Outils gratuits + gravité type MSL+ à 15 £/an [FAIT]</td>
+            <td>Même gravité du gratuit attendue ; cellules de prix en € pas encore testées [ESTIMATION]</td>
+            <td>Garder Gratuit + un palier annuel bas ; ne pas importer la grille Motion dans aucun des deux marchés.</td>
+          </tr>
+          <tr>
+            <td>Cadrage SAM Accio</td>
+            <td>Dans le SAM « anglais / calendrier exportable »</td>
+            <td>Hors de ce SAM anglais tant que non localisé</td>
+            <td><span class="tag inf">Inférence</span> Lancer le Royaume-Uni d’abord pour le product-market fit ; séquencer la France après preuve de taux de parse et de NL français.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <span class="tag inf">Inférence</span>
+        <p style="margin:6px 0 0"><b>Comment utiliser cette comparaison :</b> la France n’est pas un « marché plus petit ». C’est une <em>deuxième tête de pont</em> à effectif comparable, avec un problème de distribution plus dur (langue + export d’EDT fragmenté). Garder le Royaume-Uni comme centre de conception jusqu’à ce que (1) l’import ICS/ENT fonctionne pour une cohorte campus française nommée et (2) la capture en langage naturel français convertisse. Ensuite appliquer le même Free + palier faisabilité, prix en euros, avec des pilotes campus visant student-success / digital education.</p>
+      </div>
+    </section>
+
+    <section id="som">
+      <h2>9. SOM 24 mois — la capacité, pas un pourcentage du TAM</h2>
+      <div class="chart-block">
+        <h3>Scénarios de revenu annuel B2C en libre-service</h3>
+        <p class="caption">étudiants activés × conversion gratuit→payant × ARPU · toutes les entrées [ESTIMATION]</p>
+        <div id="som-b2c" role="img" aria-label="Diagramme du revenu SOM B2C"></div>
+      </div>
+      <div class="chart-block">
+        <h3>Scénarios de licence campus</h3>
+        <p class="caption">campus × sièges × £/siège/an · scénarios de planification, pas une affirmation que les universités paieront</p>
+        <div id="som-b2b" role="img" aria-label="Diagramme du revenu SOM licences campus"></div>
+      </div>
+      <p>Hypothèse de base : 8–9 mois payants d’usage réel par an, pics d’examens, creux d’été. Mesurer l’activation de septembre, la rétention à 6 semaines, l’usage en période d’examens, la réactivation d’été, la poursuite l’année suivante — pas le nombre de logos mensuels.</p>
+    </section>
+
+    <section id="pricing">
+      <h2>10. Hypothèse d’offre</h2>
+      <table>
+        <thead><tr><th>Palier</th><th>Hypothèse</th><th>Pourquoi il existe</th></tr></thead>
+        <tbody>
+          <tr><td>Gratuit 0 £</td><td>Un ICS, capture, ranking de base, accepter/refuser, horizon limité</td><td>Battre la gravité du gratuit ; semer le campus</td></tr>
+          <tr><td>Plus 3 £/mois ou 27 £/an</td><td>Plus de calendriers, at-risk, historique, sync</td><td>Tester la WTP individuelle</td></tr>
+          <tr><td>Pro 6 £/mois ou 54 £/an</td><td>Solveur, sessions splittables, énergie, analytics</td><td>Se pricer vs MSL+ / Structured, pas Motion</td></tr>
+          <tr><td>Max 9 £/mois ou 81 £/an</td><td>Seulement si la rétention le prouve</td><td>Ne pas lancer quatre paliers au jour 1</td></tr>
+          <tr><td>Campus 12–24 £/siège/an</td><td>SSO, privacy, outcomes agrégés, connecteurs LMS</td><td>Piloter séparément du B2C</td></tr>
+        </tbody>
+      </table>
+      <p class="small">Recommandation : commencer par Gratuit + un palier annuel Student Plus/Pro. L’expérience qui compte : l’ingest calendrier + la faisabilité augmentent-ils la conversion payante vs la capture gratuite. Tester 0 / 3 / 6 / 9 £ et le prépayé année académique uniquement sur des fonctions livrées.</p>
+    </section>
+
+    <section id="gtm">
+      <h2>11. Tête de pont go-to-market</h2>
+      <ol>
+        <li><b>Design partner Imperial</b> — un programme dense Outlook/ICS et un contact student-success ou digital education.</li>
+        <li><b>Expansion par sociétés</b> — STEM, informatique, médecine, ingénierie, masters enseignés ; ambassadeurs qui montrent « lundi 8 h ».</li>
+        <li><b>Cluster Russell Group</b> — onboarding ICS portable, pas un connecteur par université.</li>
+        <li><b>Libre-service UK + Irlande</b> — puis d’autres campus anglophones avec calendriers exportables.</li>
+        <li><b>Deuxième tête de pont France</b> — seulement après UI/NL français et un chemin d’import ENT/ICS prouvé sur une cohorte université ou école d’ingénieurs (voir <a href="#uk-fr">§8</a>).</li>
+      </ol>
+      <p>Entonnoir d’activation à instrumenter : <b>Importer l’EDT → choisir les modules → ajouter une vraie deadline → accepter un bloc suggéré → le terminer ou l’éditer → recommencer le lendemain.</b> Product Hunt est le mauvais premier canal : il atteint des fans de productivité, pas le flux EDT/LMS.</p>
+    </section>
+
+    <section id="risks">
+      <h2>12. Critères d’arrêt et les trois tests qui comptent</h2>
+      <table>
+        <thead><tr><th>Risque</th><th>Signal d’arrêt / pause</th></tr></thead>
+        <tbody>
+          <tr><td>ChatGPT + Agenda fait déjà 80 % du job</td><td>La majorité n’importera pas un EDT ni n’entrera des durées après un essai guidé</td></tr>
+          <tr><td>Fragmentation des flux</td><td>Le taux d’événements valides n’atteint pas un seuil bêta fixé à l’avance</td></tr>
+          <tr><td>Gravité du gratuit</td><td>Usage sans conversion — garder le gratuit ; licence campus seulement avec outcomes + sponsor</td></tr>
+          <tr><td>Mauvaises recommandations</td><td>Tuer la fonction LLM si elle n’améliore pas sessions acceptées/terminées vs le baseline déterministe</td></tr>
+          <tr><td>Déluge de fausses tâches IA</td><td>Modèles fermés, budgets, digest ; pas de génération de masse</td></tr>
+          <tr><td>Churn année académique</td><td>Ne pas compter l’usage saisonnier comme rétention durable</td></tr>
+          <tr><td>Privacy / achats</td><td>Pauser les ventes université sans preuves sécu ; mener le self-serve en parallèle</td></tr>
+          <tr><td>Motion/Reclaim descendent de marché</td><td>Concurrencer sur ontologie, distribution, confiance — pas un fossé fonctionnel permanent</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <p style="margin:0"><b>Si nous ne validons que trois choses ensuite :</b> (1) les étudiants connectent un vrai emploi du temps ; (2) une suggestion adossée à un solveur améliore le travail terminé avant deadline vs leur flux actuel ; (3) assez d’étudiants, ou un budget holder d’université, paieront pour cette amélioration.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>Synthèse de <code>accio-competitive-analysis-market-sizing.md</code> et <code>student-productivity-competitive-evidence.md</code>. Sources primaires : HESA, Imperial, Russell Group, UNESCO, et pages vendeurs listées dans ces fichiers (consultées le 20 oct. 2026). Effectifs France : MESR-SIES, <em>Les effectifs étudiants dans l’enseignement supérieur en 2024-2025</em> (3 012 800 inscriptions ; université strict 1 631 500), consultés le 21 oct. 2026.</p>
+      <p class="src">Version anglaise : <a href="accio-synthesis-en.html">accio-synthesis-en.html</a></p>
+    </footer>
+  </div>
+
+  <script>
+    const TEAL = "#0f6e6e", AMBER = "#c47a1a", CORAL = "#c45c4a", SAGE = "#4a7c59", INK = "#1a2332", MUTED = "#5a6a7e", LINE = "#d4cfc4";
+
+    function el(tag, attrs, kids) {
+      const n = document.createElementNS("http://www.w3.org/2000/svg", tag);
+      Object.entries(attrs || {}).forEach(([k, v]) => n.setAttribute(k, v));
+      (kids || []).forEach((c) => n.appendChild(typeof c === "string" ? document.createTextNode(c) : c));
+      return n;
+    }
+    function svgRoot(w, h) {
+      return el("svg", { class: "chart", viewBox: `0 0 ${w} ${h}`, role: "presentation" });
+    }
+
+    function groupedBars(mount, { labels, series, ylabel, ymax, tickFmt }) {
+      const W = 980, H = 340, m = { t: 16, r: 16, b: 78, l: 64 };
+      const iw = W - m.l - m.r, ih = H - m.t - m.b;
+      const svg = svgRoot(W, H);
+      const gMax = ymax || Math.max(...series.flatMap((s) => s.values)) * 1.15;
+      const n = labels.length, g = series.length;
+      const gw = iw / n;
+      svg.appendChild(el("text", { x: 12, y: 14, fill: MUTED, "font-size": 11, "font-family": "system-ui" }, [ylabel]));
+      for (let t = 0; t <= 4; t++) {
+        const v = (gMax * t) / 4, y = m.t + ih - (v / gMax) * ih;
+        svg.appendChild(el("line", { x1: m.l, x2: W - m.r, y1: y, y2: y, stroke: LINE, "stroke-width": 1 }));
+        svg.appendChild(el("text", { x: m.l - 8, y: y + 4, fill: MUTED, "font-size": 11, "text-anchor": "end", "font-family": "system-ui" }, [tickFmt ? tickFmt(v) : String(Math.round(v))]));
+      }
+      labels.forEach((lab, i) => {
+        const x0 = m.l + i * gw;
+        series.forEach((s, si) => {
+          const bw = Math.min(36, (gw - 24) / g);
+          const gap = 6;
+          const total = g * bw + (g - 1) * gap;
+          const x = x0 + (gw - total) / 2 + si * (bw + gap);
+          const h = (s.values[i] / gMax) * ih;
+          const y = m.t + ih - h;
+          svg.appendChild(el("rect", { x, y, width: bw, height: Math.max(0, h), fill: s.color }));
+        });
+        const lines = lab.split("\n");
+        lines.forEach((ln, li) => {
+          svg.appendChild(el("text", { x: x0 + gw / 2, y: H - m.b + 16 + li * 13, fill: INK, "font-size": 11, "text-anchor": "middle", "font-family": "system-ui" }, [ln]));
+        });
+      });
+      series.forEach((s, i) => {
+        const x = m.l + i * 160;
+        svg.appendChild(el("rect", { x, y: H - 18, width: 10, height: 10, fill: s.color }));
+        svg.appendChild(el("text", { x: x + 16, y: H - 9, fill: INK, "font-size": 11, "font-family": "system-ui" }, [s.name]));
+      });
+      mount.appendChild(svg);
+    }
+
+    function hBars(mount, { rows, xmax }) {
+      const W = 980, rowH = 36, m = { t: 8, r: 88, b: 12, l: 188 };
+      const H = m.t + m.b + rows.length * rowH;
+      const iw = W - m.l - m.r;
+      const max = xmax || Math.max(...rows.map((r) => r.value));
+      const svg = svgRoot(W, H);
+      rows.forEach((r, i) => {
+        const y = m.t + i * rowH;
+        svg.appendChild(el("text", { x: m.l - 10, y: y + 18, fill: INK, "font-size": 12, "text-anchor": "end", "font-family": "system-ui" }, [r.label]));
+        svg.appendChild(el("rect", { x: m.l, y: y + 6, width: iw, height: 18, fill: "#eeeae3" }));
+        svg.appendChild(el("rect", { x: m.l, y: y + 6, width: (r.value / max) * iw, height: 18, fill: r.color || TEAL }));
+        svg.appendChild(el("text", { x: m.l + (r.value / max) * iw + 6, y: y + 19, fill: INK, "font-size": 11, "font-family": "system-ui" }, [r.display]));
+      });
+      mount.appendChild(svg);
+    }
+
+    function scatter(mount, points) {
+      const W = 980, H = 420, m = { t: 24, r: 24, b: 48, l: 52 };
+      const iw = W - m.l - m.r, ih = H - m.t - m.b;
+      const svg = svgRoot(W, H);
+      svg.appendChild(el("rect", { x: m.l + iw / 2, y: m.t, width: iw / 2, height: ih / 2, fill: "#dce8e0", opacity: "0.55" }));
+      svg.appendChild(el("text", { x: m.l + iw * 0.75, y: m.t + 18, fill: SAGE, "font-size": 11, "text-anchor": "middle", "font-family": "system-ui" }, ["Quadrant ouvert : académique + solveur"]));
+      for (let t = 0; t <= 10; t += 2) {
+        const x = m.l + (t / 10) * iw, y = m.t + ih - (t / 10) * ih;
+        svg.appendChild(el("line", { x1: x, x2: x, y1: m.t, y2: m.t + ih, stroke: LINE, "stroke-width": 1 }));
+        svg.appendChild(el("line", { x1: m.l, x2: m.l + iw, y1: y, y2: y, stroke: LINE, "stroke-width": 1 }));
+        svg.appendChild(el("text", { x, y: H - 28, fill: MUTED, "font-size": 10, "text-anchor": "middle", "font-family": "system-ui" }, [String(t)]));
+        svg.appendChild(el("text", { x: m.l - 8, y: y + 3, fill: MUTED, "font-size": 10, "text-anchor": "end", "font-family": "system-ui" }, [String(t)]));
+      }
+      svg.appendChild(el("text", { x: m.l + iw / 2, y: H - 8, fill: INK, "font-size": 12, "text-anchor": "middle", "font-family": "system-ui" }, ["Ontologie académique (score analyste)"]));
+      svg.appendChild(el("text", { x: 14, y: m.t + ih / 2, fill: INK, "font-size": 12, "text-anchor": "middle", transform: `rotate(-90 14 ${m.t + ih / 2})`, "font-family": "system-ui" }, ["Ordonnancement sous contraintes (score analyste)"]));
+      const jitter = {};
+      points.forEach((p) => {
+        const x = m.l + (p.x / 10) * iw;
+        const y = m.t + ih - (p.y / 10) * ih;
+        svg.appendChild(el("circle", { cx: x, cy: y, r: p.r || 6, fill: p.color, opacity: "0.92" }));
+        const key = p.x + "," + p.y;
+        jitter[key] = (jitter[key] || 0) + 1;
+        const dy = (jitter[key] - 1) * 12;
+        svg.appendChild(el("text", { x: x + 8, y: y + 4 + dy, fill: INK, "font-size": 11, "font-family": "system-ui" }, [p.label]));
+      });
+      mount.appendChild(svg);
+    }
+
+    scatter(document.getElementById("scatter"), [
+      { label: "MyStudyLife", x: 9, y: 2, color: TEAL },
+      { label: "iStudiez", x: 8, y: 1, color: TEAL },
+      { label: "LMS (Canvas/Moodle)", x: 7, y: 1, color: MUTED },
+      { label: "Smart Scheduler (livré)", x: 6, y: 5, color: AMBER, r: 8 },
+      { label: "Structured", x: 3, y: 3, color: SAGE },
+      { label: "Tiimo", x: 2, y: 3, color: SAGE },
+      { label: "Morgen", x: 1.5, y: 5, color: SAGE },
+      { label: "Motion", x: 1, y: 9, color: CORAL },
+      { label: "Reclaim", x: 1, y: 8, color: CORAL },
+      { label: "Todoist / TickTick", x: 1, y: 1.5, color: MUTED },
+      { label: "Google Agenda + Gemini", x: 1, y: 2.5, color: MUTED },
+      { label: "Notion Calendar", x: 2, y: 1, color: MUTED },
+      { label: "ChatGPT / Claude", x: 0.8, y: 2, color: MUTED },
+      { label: "Forest / Goblin", x: 0.5, y: 0.5, color: MUTED }
+    ]);
+
+    hBars(document.getElementById("prices-chart"), { rows: [
+      { label: "Google / Notion étudiant", value: 0.4, display: "0 $ / 0 £  [FAIT]", color: SAGE },
+      { label: "Structured Pro", value: 11.99, display: "11,99 $/an  [FAIT, listing US]", color: TEAL },
+      { label: "MyStudyLife+", value: 14.99, display: "14,99 £/an  [FAIT, promo 2024 sur la page]", color: TEAL },
+      { label: "Hypothèse Student Plus", value: 27, display: "27 £ / année académique  [ESTIMATION]", color: AMBER },
+      { label: "TickTick Premium", value: 49.99, display: "49,99 $/an  [FAIT]", color: MUTED },
+      { label: "Hypothèse Student Pro", value: 54, display: "54 £ / année académique  [ESTIMATION]", color: AMBER },
+      { label: "Todoist Pro", value: 60, display: "60 $/an  [FAIT]", color: MUTED },
+      { label: "Morgen Pro (annuel)", value: 180, display: "15 $/mois × 12 = 180 $  [FAIT]", color: CORAL },
+      { label: "Motion Pro AI (annuel)", value: 228, display: "19 $/siège/mois × 12 = 228 $  [FAIT]", color: CORAL }
+    ], xmax: 240 });
+
+    groupedBars(document.getElementById("shipped-chart"), {
+      ylabel: "Items cartographiés",
+      labels: ["Calendrier &\nacadémique", "Capture\nde tâches", "Priorité\n& IA", "Planification", "Contrôle &\napprentissage"],
+      series: [
+        { name: "Livré (Schedule+ / Ike)", color: TEAL, values: [8, 6, 4, 5, 1] },
+        { name: "Conçu (fusion)", color: AMBER, values: [2, 1, 4, 2, 5] }
+      ],
+      tickFmt: (v) => String(Math.round(v))
+    });
+
+    groupedBars(document.getElementById("tam-chart"), {
+      ylabel: "Milliards de £",
+      labels: ["Bas\n45 % × 40 %", "Base\n60 % × 55 %", "Haut\n75 % × 70 %"],
+      series: [
+        { name: "36 £ / an", color: SAGE, values: [1.74, 3.20, 5.08] },
+        { name: "54 £ / an", color: TEAL, values: [2.61, 4.79, 7.63] },
+        { name: "72 £ / an", color: AMBER, values: [3.49, 6.39, 10.17] }
+      ],
+      tickFmt: (v) => v.toFixed(1) + " Md£"
+    });
+
+    groupedBars(document.getElementById("sam-chart"), {
+      ylabel: "Md£ à 36–72 £",
+      labels: ["SAM bas\n19,4 M étudiants", "SAM base\n39,5 M", "SAM haut\n68,9 M"],
+      series: [
+        { name: "ARPU bas 36 £ (Md£)", color: SAGE, values: [0.70, 1.42, 2.48] },
+        { name: "ARPU haut 72 £ (Md£)", color: TEAL, values: [1.39, 2.85, 4.96] }
+      ],
+      tickFmt: (v) => v.toFixed(1) + " Md£"
+    });
+
+    groupedBars(document.getElementById("beach-chart"), {
+      ylabel: "Personnes",
+      labels: ["Imperial\n23 248 [FAIT]", "Russell Group\n~750 000 [FAIT]", "HE Royaume-Uni\n2 863 180 [FAIT]"],
+      series: [
+        { name: "Payants bas (15 %)", color: SAGE, values: [3487, 112500, 429477] },
+        { name: "Payants base (25 %)", color: TEAL, values: [5812, 187500, 715795] },
+        { name: "Payants haut (35 %)", color: AMBER, values: [8137, 262500, 1002113] }
+      ],
+      tickFmt: (v) => v >= 1e6 ? (v / 1e6).toFixed(1) + " M" : v >= 1000 ? Math.round(v / 1000) + " k" : String(Math.round(v))
+    });
+
+    hBars(document.getElementById("uk-fr-headcount"), { rows: [
+      { label: "HE Royaume-Uni (HESA)", value: 2863180, display: "2,86 M d’inscriptions  [FAIT]", color: TEAL },
+      { label: "ES France (MESR-SIES)", value: 3012800, display: "3,01 M d’inscriptions  [FAIT]", color: AMBER },
+      { label: "Universités FR seulement", value: 1631500, display: "1,63 M (périmètre strict)  [FAIT]", color: SAGE }
+    ], xmax: 3200000 });
+
+    groupedBars(document.getElementById("uk-fr-paid"), {
+      ylabel: "Utilisateurs payants (scénario)",
+      labels: ["Bas 15 %", "Base 25 %", "Haut 35 %"],
+      series: [
+        { name: "Payants UK [ESTIMATION]", color: TEAL, values: [429477, 715795, 1002113] },
+        { name: "Payants France [ESTIMATION]", color: AMBER, values: [451920, 753200, 1054480] }
+      ],
+      tickFmt: (v) => v >= 1e6 ? (v / 1e6).toFixed(1) + " M" : Math.round(v / 1000) + " k"
+    });
+
+    groupedBars(document.getElementById("som-b2c"), {
+      ylabel: "£ / an",
+      labels: ["Bas\n10 k × 4 % × 36 £", "Base\n30 k × 8 % × 54 £", "Haut\n75 k × 12 % × 72 £"],
+      series: [{ name: "Revenu annuel B2C [ESTIMATION]", color: TEAL, values: [14400, 129600, 648000] }],
+      tickFmt: (v) => v >= 1000 ? Math.round(v / 1000) + " k£" : Math.round(v) + " £"
+    });
+
+    groupedBars(document.getElementById("som-b2b"), {
+      ylabel: "£ / an",
+      labels: ["Pilote\n1 × 3 000 × 12 £", "Base\n3 × 5 000 × 18 £", "Expansion\n8 × 8 000 × 24 £"],
+      series: [{ name: "Revenu annuel B2B [ESTIMATION]", color: AMBER, values: [36000, 270000, 1536000] }],
+      tickFmt: (v) => v >= 1e6 ? (v / 1e6).toFixed(2) + " M£" : Math.round(v / 1000) + " k£"
+    });
+  </script>
+</body>
+</html>

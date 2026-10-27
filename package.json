@@ -1,26 +1,77 @@
 {
-  "name": "schedule-app",
-  "version": "0.1.0",
+  "name": "smart-scheduler",
+  "version": "1.0.0",
   "private": true,
+  "description": "Personal academic timetable and task planner",
+  "author": "Smart Scheduler",
+  "main": "desktop/main.cjs",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "desktop": "electron .",
+    "desktop:dev": "electron .",
+    "build:next": "next build",
+    "prepare:standalone": "node desktop/prepare-standalone.cjs",
+    "build:desktop": "npm run build:next && npm run prepare:standalone && electron-builder --mac dir && npm run sync:desktop",
+    "pack": "npm run build:desktop",
+    "sync:desktop": "bash desktop/sync-desktop-shortcut.sh",
+    "install:macos": "bash desktop/install-macos.sh"
   },
   "dependencies": {
+    "luxon": "^3.7.2",
     "next": "16.4.2",
+    "node-ical": "^0.27.3",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
+    "@types/luxon": "^3.7.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "electron": "^44.8.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7",
+    "wait-on": "^9.5.1"
+  },
+  "build": {
+    "appId": "perso.smart-scheduler.app",
+    "productName": "Smart Scheduler",
+    "copyright": "Copyright © Smart Scheduler",
+    "directories": {
+      "output": "dist-desktop",
+      "buildResources": "desktop"
+    },
+    "afterPack": "./desktop/afterPack.cjs",
+    "files": [
+      "desktop/main.cjs",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": ".next/standalone",
+        "to": "standalone",
+        "filter": ["**/*", "!data", "!data/**/*"]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "desktop/icon.icns",
+      "target": ["dir"],
+      "identity": null,
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "asar": true
   }
 }

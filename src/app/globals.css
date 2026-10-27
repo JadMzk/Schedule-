@@ -1,26 +1,132 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #1a2332;
+  --ink-muted: #5a6a7e;
+  --paper: #f3f1eb;
+  --paper-2: #e8e4da;
+  --surface: #fffcf7;
+  --teal: #0f6e6e;
+  --teal-deep: #0a4f4f;
+  --teal-soft: #d5ecec;
+  --amber: #c47a1a;
+  --amber-soft: #f5e6d0;
+  --coral: #c45c4a;
+  --coral-soft: #f5ddd8;
+  --sage: #4a7c59;
+  --sage-soft: #dce8e0;
+  --line: #d4cfc4;
+  --shadow: 0 1px 2px rgb(26 35 50 / 6%), 0 8px 24px rgb(26 35 50 / 6%);
+  --academic: #0f6e6e;
+  --task: #c47a1a;
+  --deadline: #c45c4a;
+  --session: #4a7c59;
+  /* TaskCategory colours (keep in sync with src/lib/categories.ts) */
+  --cat-study: #0f6e6e;
+  --cat-coursework: #3d5a80;
+  --cat-career: #6b4c9a;
+  --cat-sport: #c47a1a;
+  --cat-personal: #4a7c59;
+  --cat-other: #5a6a7e;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-surface: var(--surface);
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-teal-soft: var(--teal-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
+  --color-sage: var(--sage);
+  --color-sage-soft: var(--sage-soft);
+  --color-line: var(--line);
+  --font-sans: var(--font-source-sans);
+  --font-display: var(--font-fraunces);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgb(15 110 110 / 12%), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgb(196 122 26 / 10%), transparent),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+  font-family: var(--font-source-sans), "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 550;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(90 106 126 / 35%);
+  border-radius: 999px;
+}
+
+/*
+ * Opacity-only entrance. Do not use transform here: a persistent transform
+ * on header/main creates a containing block that traps position:fixed modals.
+ */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-now {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.animate-rise {
+  animation: rise-in 0.35s ease-out both;
+}
+
+.now-line {
+  animation: pulse-now 2s ease-in-out infinite;
 }
